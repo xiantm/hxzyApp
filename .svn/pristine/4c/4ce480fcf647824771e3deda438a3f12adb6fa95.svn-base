@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "hxzy.ptb.hxzyappkit"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //解决发布时的问题
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    //解决方法数受限
+    dexOptions {
+        jumboMode true
+    }
+
+}
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '27.0.2'
+            }
+        }
+    }
+}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    //文字图像(link: https://github.com/Carbs0126/AvatarImageView)
+    implementation 'cn.carbs.android:AvatarImageView:1.0.4'
+
+    //QQ邮箱团队开源UI组件(link: https://github.com/QMUI/QMUI_Android)
+    implementation "com.qmuiteam:qmui:1.0.6"
+
+    //使用kotlin进行http请求(link: https://github.com/kittinunf/Fuel)
+    implementation "com.github.kittinunf.fuel:fuel:1.12.1" //for JVM
+    implementation "com.github.kittinunf.fuel:fuel-android:1.12.1" //for Android
+
+    //fastjson
+    implementation 'com.alibaba:fastjson:1.2.44'
+    implementation 'com.alibaba:fastjson:1.1.67.android'
+
+    //Android通用工具(link: https://github.com/Blankj/AndroidUtilCode)
+    implementation 'com.blankj:utilcode:1.12.6'
+
+    //版本更新
+    implementation 'com.allenliu.versionchecklib:library:2.0.2'
+
+    //sqlite数据库操作用room(link: https://developer.android.google.cn/training/data-storage/room/index.html)
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    kapt "android.arch.persistence.room:compiler:1.0.0"
+
+    //RecyclerView通用适配器
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
+
+    //图片加载器
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    kapt 'com.github.bumptech.glide:compiler:4.6.1'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
